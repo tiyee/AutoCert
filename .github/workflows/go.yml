@@ -5,7 +5,7 @@ name: Go
 
 on:
   schedule:
-    - cron:  '30 5 * * 1'
+    - cron:  '30 5 */2 * *'
   workflow_dispatch:
 
 env:
