@@ -28,7 +28,8 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.23'
-
+    - name: Mod
+      run: go mod tidy
     - name: Build
       run: go run cmd/main.go --domain=${{env.DOMAINTOOLS}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{env.DNSAccessKeyId}} --dns-access-key-secret=${{env.DNSAccessKeySecret}} --cdn-access-key-id=${{env.CDNAccessKeyId}} --cdn-access-key-secret=${{env.CDNAccessKeySecret}}
  
