@@ -38,5 +38,6 @@ jobs:
       run: ./AutoCert --domain=${{vars.DOMAINTOOLS}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{env.DNSAccessKeyId}} --dns-access-key-secret=${{env.DNSAccessKeySecret}} --cdn-access-key-id=${{env.CDNAccessKeyId}} --cdn-access-key-secret=${{env.CDNAccessKeySecret}}
     - name: ${{vars.DOMAINCLASSROOMS}}
       run: ./AutoCert --domain=${{vars.DOMAINCLASSROOMS}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{env.DNSAccessKeyId}} --dns-access-key-secret=${{env.DNSAccessKeySecret}} --cdn-access-key-id=${{env.CDNAccessKeyId}} --cdn-access-key-secret=${{env.CDNAccessKeySecret}}
+    - name: ${{vars.DOMAINICUA}}
+      run: ./AutoCert --domain=${{vars.DOMAINICUA}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{env.DNSAccessKeyId}} --dns-access-key-secret=${{env.DNSAccessKeySecret}} --cdn-access-key-id=${{env.CDNAccessKeyId}} --cdn-access-key-secret=${{env.CDNAccessKeySecret}}
 
- 
