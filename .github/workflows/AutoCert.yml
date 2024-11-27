@@ -1,7 +1,7 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Go
+name: AutoCert
 
 on:
   schedule:
@@ -31,7 +31,7 @@ jobs:
         check-latest: true
           
     - name: Mod
-      run: go mod tidy
+      run: go mod tidy  && go mod download
     - name: Build
       run: go build -o AutoCert cmd/main.go
     - name: ${{vars.DOMAINTOOLS}}
