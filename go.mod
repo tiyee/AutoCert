@@ -8,7 +8,7 @@ require (
 	github.com/alibabacloud-go/tea v1.2.2
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.6
 	github.com/go-acme/lego/v4 v4.18.0
-	github.com/tiyee/gokit v1.0.11
+	github.com/tiyee/gokit v1.0.18
 
 )
 
