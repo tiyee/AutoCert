@@ -5,7 +5,7 @@ name: AutoCert
 
 on:
   schedule:
-    - cron:  '30 5 */2 * *'
+    - cron:  '30 5 */3 * *'
   workflow_dispatch:
 
 env:
