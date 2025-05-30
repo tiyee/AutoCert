@@ -27,7 +27,7 @@ func (s CertStat) Expired() bool {
 }
 func (s CertStat) Renewable() bool {
 	fmt.Println("last_time:", time.Unix(s.LastTime, 0).Format(time.DateTime))
-	return s.LastTime-20*3600*24 < time.Now().Unix()
+	return s.LastTime-10*3600*24 < time.Now().Unix()
 }
 
 type IDeployer interface {
