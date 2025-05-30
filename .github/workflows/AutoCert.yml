@@ -41,5 +41,5 @@ jobs:
       run: ./AutoCert --domain=${{vars.DOMAINCLASSROOMS}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{env.DNSAccessKeyId}} --dns-access-key-secret=${{env.DNSAccessKeySecret}} --cdn-access-key-id=${{env.CDNAccessKeyId}} --cdn-access-key-secret=${{env.CDNAccessKeySecret}}
     - name: ${{vars.DOMAINICUA}}
       run: ./AutoCert --domain=${{vars.DOMAINICUA}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{env.DNSAccessKeyId}} --dns-access-key-secret=${{env.DNSAccessKeySecret}} --cdn-access-key-id=${{env.CDNAccessKeyId}} --cdn-access-key-secret=${{env.CDNAccessKeySecret}}
-    - name: s_dream
+    - name: ${{vars.DOMAINSDREAM}}
       run: ./AutoCert --domain=${{vars.DOMAINSDREAM}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{secrets.AVAR_DNS_AK}} --dns-access-key-secret=${{secrets.AVAR_DNS_SK}} --cdn-access-key-id=${{secrets.AVAR_CDN_AK}} --cdn-access-key-secret=${{secrets.AVAR_CDN_SK}}
