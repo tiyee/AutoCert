@@ -16,7 +16,7 @@
 | 名称       | 类型     | 说明              |
 | ---------- | -------- | ----------------- |
 | domain       | `string` | 需要部署证书的域名 |
-| email | `string` | 申请制(即你)的邮箱地址    |
+| email | `string` | 申请者(即你)的邮箱地址    |
 | product     | `string` | 产品，目前固定cdn |
 | certonly     | `boolean` | 是否新申请 |
 | renew     | `boolean` | 是否是更新域名 |
