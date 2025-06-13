@@ -4,11 +4,11 @@
 
 ## 使用方法
 
-> go run cmd/main.go --platform=aliyun --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
+> go run cmd/main.go  --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
 
 如果只想申请，可以把命令改成:
 
-> go run cmd/apply/main.go --platform=aliyun --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
+> go run cmd/apply/main.go  --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
 
 
 ## 参数说明
