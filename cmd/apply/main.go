@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/tiyee/AutoCert"
 	"github.com/tiyee/AutoCert/internal/applicant"
 )
@@ -9,15 +10,17 @@ import (
 func main() {
 	cfg := AutoCert.Cfg
 	AutoCert.ValidApplyCfg()
-	opt := applicant.ApplyOption{
-		Email:           cfg.Email,
-		Domain:          cfg.Domain,
-		AccessKeyId:     cfg.DNSCredentials.AccessKeyId,
-		AccessKeySecret: cfg.DNSCredentials.AccessKeySecret,
-		Nameservers:     "1.1.1.1;8.8.8.8",
+	f := applicant.GetApplicant(cfg.Platform)
+	if f == nil {
+		fmt.Println("apply Platform not supported")
+		return
 	}
-	aliyunDNS := applicant.NewAliyun(&opt)
-	lst, err := aliyunDNS.Apply()
+	client := f(applicant.WithDomain(cfg.Domain),
+		applicant.WithEmail(cfg.Email),
+		applicant.WithAccessKeyId(cfg.DNSCredentials.AccessKeyId),
+		applicant.WithAccessKeySecret(cfg.DNSCredentials.AccessKeySecret),
+		applicant.WithNameservers("1.1.1.1;8.8.8.8"))
+	lst, err := client.Apply()
 	if err != nil {
 		fmt.Println(err.Error())
 		return

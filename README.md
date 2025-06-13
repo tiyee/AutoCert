@@ -1,29 +1,29 @@
 # AutoCert
 
-云厂商https证书自动更新机器人(目前只适配阿里云cdn)
+云厂商https证书自动更新机器人(目前适配阿里云cdn|腾讯云)
 
 ## 使用方法
 
-> go run cmd/main.go --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx
+> go run cmd/main.go --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
 
 如果只想申请，可以把命令改成:
 
-> go run cmd/apply/main.go --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx
+> go run cmd/apply/main.go --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
 
 
 ## 参数说明
 
-| 名称       | 类型     | 说明              |
-| ---------- | -------- | ----------------- |
-| domain       | `string` | 需要部署证书的域名 |
-| email | `string` | 申请者(即你)的邮箱地址    |
-| product     | `string` | 产品，目前固定cdn |
-| certonly     | `boolean` | 是否新申请 |
-| renew     | `boolean` | 是否是更新域名 |
-| dns-access-key-id     | `string` | 阿里云dns的AK(主要是申请证书的时候需要添加一条txt记录来验证域名所有权) |
-| dns-access-key-secret    | `string` | 阿里云dns的SK |
-| cdn-access-key-id     | `string` | 阿里云cdn的AK |
-| cdn-access-key-secret     | `string` | 阿里云cdn的SK |
+| 名称       | 类型     | 说明                                 |
+| ---------- | -------- |------------------------------------|
+| domain       | `string` | 需要部署证书的域名                          |
+| email | `string` | 申请者(即你)的邮箱地址                       |
+| product     | `string` | 产品，目前固定cdn                         |
+| certonly     | `boolean` | 是否新申请                              |
+| renew     | `boolean` | 是否是更新域名                            |
+| dns-access-key-id     | `string` | dns的AK(主要是申请证书的时候需要添加一条txt记录来验证域名所有权) |
+| dns-access-key-secret    | `string` | dns的SK                             |
+| cdn-access-key-id     | `string` | cdn的AK                             |
+| cdn-access-key-secret     | `string` | cdn的SK                          |
 
 ## 说明
 
