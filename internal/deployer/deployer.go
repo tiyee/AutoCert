@@ -3,22 +3,34 @@ package deployer
 import (
 	"context"
 	"fmt"
-	"github.com/tiyee/AutoCert/internal/applicant"
 	"time"
+
+	"github.com/tiyee/AutoCert/internal/applicant"
 )
 
-type Option struct {
-	Domain          string                `json:"domain"`
-	AccessKeyId     string                `json:"accessKeyId"`
-	AccessKeySecret string                `json:"accessKeySecret"`
-	Certificate     applicant.Certificate `json:"certificate"`
-	Variables       map[string]string     `json:"variables"`
-}
 type CertStat struct {
 	LastTime    int64  `json:"last_time"`
 	Fingerprint string `json:"fingerprint"`
 	CertName    string `json:"cert_name"`
 	CertId      string `json:"cert_id"`
+}
+
+type IDeployer interface {
+	Deploy(ctx context.Context) error
+	Search(domain string) ([]CertStat, error)
+	SetCertificate(cert applicant.Certificate)
+}
+
+type deployerFactory = func(...Option) (IDeployer, error)
+
+var applicantMap = map[string]deployerFactory{}
+
+func GetDeployer(platform string) deployerFactory {
+	return applicantMap[platform]
+}
+
+func RegisterDeployer(platform string, f deployerFactory) {
+	applicantMap[platform] = f
 }
 
 func (s CertStat) Expired() bool {
@@ -30,10 +42,6 @@ func (s CertStat) Renewable() bool {
 	return s.LastTime-10*3600*24 < time.Now().Unix()
 }
 
-type IDeployer interface {
-	Deploy(ctx context.Context) error
-	Search(domain string) ([]CertStat, error)
-}
 type CertStats []CertStat
 
 func (c CertStats) Len() int {

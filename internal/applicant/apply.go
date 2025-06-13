@@ -5,12 +5,14 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"strings"
+	"time"
+
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/go-acme/lego/v4/lego"
 	"github.com/go-acme/lego/v4/registration"
-	"strings"
 )
 
 type Certificate struct {
@@ -22,17 +24,21 @@ type Certificate struct {
 	Csr               string `json:"csr"`
 }
 
-type ApplyOption struct {
-	Email           string `json:"email"`
-	Domain          string `json:"domain"`
-	AccessKeyId     string `json:"accessKeyId"`
-	AccessKeySecret string `json:"accessKeySecret"`
-	Nameservers     string `json:"nameservers"`
-}
-
 type IApplicant interface {
 	Apply() (*Certificate, error)
 }
+type applicantFactory = func(option ...Option) IApplicant
+
+var applicantMap = map[string]applicantFactory{}
+
+func GetApplicant(platform string) applicantFactory {
+	return applicantMap[platform]
+}
+
+func RegisterApplicant(platform string, f applicantFactory) {
+	applicantMap[platform] = f
+}
+
 type IUser interface {
 	registration.User
 	SetEmail(email string)
@@ -40,7 +46,7 @@ type IUser interface {
 	SetRegistration(registration *registration.Resource)
 }
 
-func apply(option *ApplyOption, provider challenge.Provider) (*Certificate, error) {
+func apply(option *Options, provider challenge.Provider) (*Certificate, error) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
 		return nil, err
@@ -57,7 +63,9 @@ func apply(option *ApplyOption, provider challenge.Provider) (*Certificate, erro
 	challengeOptions := make([]dns01.ChallengeOption, 0)
 	nameservers := ParseNameservers(option.Nameservers)
 	if len(nameservers) > 0 {
-		challengeOptions = append(challengeOptions, dns01.AddRecursiveNameservers(nameservers))
+		challengeOptions = append(challengeOptions,
+			dns01.AddRecursiveNameservers(nameservers),
+			dns01.PropagationWait(time.Second, true))
 	}
 
 	if err := client.Challenge.SetDNS01Provider(provider, challengeOptions...); err != nil {

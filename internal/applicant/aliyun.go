@@ -1,24 +1,31 @@
 package applicant
 
 import (
-	"github.com/go-acme/lego/v4/providers/dns/alidns"
 	"time"
+
+	"github.com/go-acme/lego/v4/providers/dns/alidns"
 )
 
-type aliyun struct {
-	option *ApplyOption
+func init() {
+	RegisterApplicant("aliyun", NewAliyun)
 }
 
-func NewAliyun(option *ApplyOption) IApplicant {
+type aliyun struct {
+	options *Options
+}
+
+func NewAliyun(option ...Option) IApplicant {
+	opts := &Options{}
+	opts.Update(option...)
 	return &aliyun{
-		option: option,
+		options: opts,
 	}
 }
 
 func (a *aliyun) Apply() (*Certificate, error) {
 	cfg := alidns.Config{
-		APIKey:             a.option.AccessKeyId,
-		SecretKey:          a.option.AccessKeySecret,
+		APIKey:             a.options.AccessKeyId,
+		SecretKey:          a.options.AccessKeySecret,
 		RegionID:           "cn-hangzhou",
 		TTL:                600,
 		HTTPTimeout:        100 * time.Second,
@@ -30,5 +37,5 @@ func (a *aliyun) Apply() (*Certificate, error) {
 		return nil, err
 	}
 
-	return apply(a.option, dnsProvider)
+	return apply(a.options, dnsProvider)
 }

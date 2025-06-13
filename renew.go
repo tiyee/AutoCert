@@ -3,24 +3,28 @@ package AutoCert
 import (
 	"context"
 	"fmt"
+
 	"github.com/tiyee/AutoCert/internal/applicant"
 	"github.com/tiyee/AutoCert/internal/config"
 	"github.com/tiyee/AutoCert/internal/deployer"
 )
 
 func Renew(cfg config.Config) {
-	cdnOpt := deployer.Option{
-		Domain:          cfg.Domain,
-		AccessKeyId:     cfg.CertCredentials.AccessKeyId,
-		AccessKeySecret: cfg.CertCredentials.AccessKeySecret,
-		Variables:       make(map[string]string),
+	df := deployer.GetDeployer(cfg.Platform)
+	if df == nil {
+		fmt.Println("deploy Platform not supported")
+		return
 	}
-	aliyunCDN, err := deployer.NewAliyunCdn(&cdnOpt)
+	sslClient, err := df(deployer.WithDomain(cfg.Domain),
+		deployer.WithAccessKeyId(cfg.CertCredentials.AccessKeyId),
+		deployer.WithAccessKeySecret(cfg.CertCredentials.AccessKeySecret),
+		deployer.WithVariables(make(map[string]string)))
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	certs, err := aliyunCDN.Search(cfg.Domain)
+
+	certs, err := sslClient.Search(cfg.Domain)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -33,23 +37,25 @@ func Renew(cfg config.Config) {
 		fmt.Println("Certificate no need renew")
 		return
 	}
-	applyOpt := applicant.ApplyOption{
-		Email:           cfg.Email,
-		Domain:          cfg.Domain,
-		AccessKeyId:     cfg.DNSCredentials.AccessKeyId,
-		AccessKeySecret: cfg.DNSCredentials.AccessKeySecret,
-		Nameservers:     "1.1.1.1;8.8.8.8",
+
+	af := applicant.GetApplicant(cfg.Platform)
+	if af == nil {
+		fmt.Println("apply Platform not supported")
+		return
 	}
-	aliyunDNS := applicant.NewAliyun(&applyOpt)
-	certificate, err := aliyunDNS.Apply()
+
+	applyClient := af(applicant.WithDomain(cfg.Domain),
+		applicant.WithEmail(cfg.Email),
+		applicant.WithAccessKeyId(cfg.DNSCredentials.AccessKeyId),
+		applicant.WithAccessKeySecret(cfg.DNSCredentials.AccessKeySecret),
+		applicant.WithNameservers("1.1.1.1;8.8.8.8"))
+	certificate, err := applyClient.Apply()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
-	if err = aliyunCDN.WithOptions(func(opt *deployer.Option) {
-		opt.Certificate = *certificate
-	}).Deploy(context.Background()); err == nil {
+	sslClient.SetCertificate(*certificate)
+	if err := sslClient.Deploy(context.Background()); err == nil {
 		fmt.Println("Successfully deployed")
 	} else {
 		fmt.Println(err.Error())

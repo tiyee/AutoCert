@@ -3,10 +3,12 @@ package AutoCert
 import (
 	"flag"
 	"fmt"
-	"github.com/alibabacloud-go/tea/tea"
-	"github.com/tiyee/AutoCert/internal/config"
-	"github.com/tiyee/gokit/ptrlib"
 	"os"
+
+	"github.com/alibabacloud-go/tea/tea"
+	"github.com/tiyee/gokit/ptrlib"
+
+	"github.com/tiyee/AutoCert/internal/config"
 )
 
 var Cfg config.Config
@@ -21,15 +23,16 @@ var (
 	dnsAccessKeySecret = flag.String("dns-access-key-secret", "", "dns Access Key Secret")
 	cdnAccessKeyId     = flag.String("cdn-access-key-id", "", "cdn Access Key ID")
 	cdnAccessKeySecret = flag.String("cdn-access-key-secret", "", "cdn Access Key Secret")
+	platform           = flag.String("platform", "", "platform")
 )
 
 func init() {
-
 	flag.Parse()
 	if !*certOnly {
 		*renew = false
 	}
 	Cfg = config.Config{
+		Platform: ptrlib.ToValue(platform, ""),
 		CertOnly: tea.BoolValue(certOnly),
 		Renew:    tea.BoolValue(renew),
 		Domain:   ptrlib.ToValue(domain, ""),
