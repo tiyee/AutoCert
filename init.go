@@ -23,7 +23,7 @@ var (
 	dnsAccessKeySecret = flag.String("dns-access-key-secret", "", "dns Access Key Secret")
 	cdnAccessKeyId     = flag.String("cdn-access-key-id", "", "cdn Access Key ID")
 	cdnAccessKeySecret = flag.String("cdn-access-key-secret", "", "cdn Access Key Secret")
-	platform           = flag.String("platform", "", "platform")
+	platform           = flag.String("platform", "aliyun", "platform")
 )
 
 func init() {
