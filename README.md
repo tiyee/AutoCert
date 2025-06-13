@@ -4,17 +4,18 @@
 
 ## 使用方法
 
-> go run cmd/main.go --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
+> go run cmd/main.go --platform=aliyun --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
 
 如果只想申请，可以把命令改成:
 
-> go run cmd/apply/main.go --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
+> go run cmd/apply/main.go --platform=aliyun --domain="xxx.xxx.com" --email=xxx@xxx.com --product=cdn --certonly --dns-access-key-id=xxxxx --dns-access-key-secret=xxxx --cdn-access-key-id=xxxx --cdn-access-key-secret=xxxx -platform=[aliyun|tencent]
 
 
 ## 参数说明
 
 | 名称       | 类型     | 说明                                 |
 | ---------- | -------- |------------------------------------|
+| platform      | `string` | 平台，默认aliyun,支持aliyun和tencent                          |
 | domain       | `string` | 需要部署证书的域名                          |
 | email | `string` | 申请者(即你)的邮箱地址                       |
 | product     | `string` | 产品，目前固定cdn                         |
