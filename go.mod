@@ -9,7 +9,7 @@ require (
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.7
 	github.com/go-acme/lego/v4 v4.23.1
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.0.1186
-	github.com/tiyee/gokit v1.0.18
+	github.com/tiyee/gokit v1.0.19
 
 )
 
