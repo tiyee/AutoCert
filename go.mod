@@ -8,6 +8,7 @@ require (
 	github.com/alibabacloud-go/tea v1.3.9
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.7
 	github.com/go-acme/lego/v4 v4.23.1
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1195
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.0.1186
 	github.com/tiyee/gokit v1.0.19
 
@@ -29,7 +30,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.1-0.20220228012449-10b1cf09e00b // indirect
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1186 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod v1.0.1128 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
