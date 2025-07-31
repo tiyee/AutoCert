@@ -1,8 +1,7 @@
 module github.com/tiyee/AutoCert
 
-go 1.24.0
+go 1.24
 
-toolchain go1.24.5
 
 require (
 	github.com/alibabacloud-go/cdn-20180510/v5 v5.2.2
