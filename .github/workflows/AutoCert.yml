@@ -27,9 +27,11 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5.5.0
       with:
-        go-version: '1.24'
+        # go-version: '1.24'
         check-latest: true
         cache-dependency-path: "**/*.mod"
+        go-version-file: './go.mod'
+      
           
     - name: Mod
       run: go mod tidy  && go mod download
