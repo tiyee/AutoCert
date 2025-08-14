@@ -1,18 +1,16 @@
 module github.com/tiyee/AutoCert
 
-go 1.24
-
+go 1.25
 
 require (
 	github.com/alibabacloud-go/cdn-20180510/v5 v5.2.2
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.9
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.10
 	github.com/alibabacloud-go/tea v1.3.10
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.7
-	github.com/go-acme/lego/v4 v4.25.1
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.1.4
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.1.4
+	github.com/go-acme/lego/v4 v4.25.2
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.1.10
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.1.10
 	github.com/tiyee/gokit v1.0.19
-
 )
 
 require (
