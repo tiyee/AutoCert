@@ -7,9 +7,9 @@ require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.13
 	github.com/alibabacloud-go/tea v1.3.14
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.9
-	github.com/go-acme/lego/v4 v4.28.1
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.3
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.1.49
+	github.com/go-acme/lego/v4 v4.30.1
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.23
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.3.20
 	github.com/tiyee/gokit v1.0.19
 )
 
