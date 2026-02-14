@@ -4,12 +4,12 @@ go 1.25
 
 require (
 	github.com/alibabacloud-go/cdn-20180510/v5 v5.2.2
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.14
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.15
 	github.com/alibabacloud-go/tea v1.4.0
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.9
 	github.com/go-acme/lego/v4 v4.31.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.39
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.3.35
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.48
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ssl v1.3.42
 	github.com/tiyee/gokit v1.0.19
 )
 
