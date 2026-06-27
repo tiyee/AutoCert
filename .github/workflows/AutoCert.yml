@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5.0.0
+    - uses: actions/checkout@v7
 
     - name: Set up Go
       uses: actions/setup-go@v6
@@ -33,7 +33,7 @@ jobs:
         go-version-file: './go.mod'
       
           
-    - name: Mod
+    - name: Depedency
       run: go mod tidy  && go mod download
     - name: Build
       run: go build -o AutoCert cmd/main.go
