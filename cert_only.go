@@ -27,7 +27,7 @@ func CertOnly(cfg config.Config) {
 		return
 	}
 
-	df := deployer.GetDeployer(cfg.Platform)
+	df := deployer.GetDeployer(cfg.CDNPlatform)
 	if df == nil {
 		fmt.Println("deploy Platform not supported")
 		return
