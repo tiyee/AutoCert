@@ -24,6 +24,8 @@ var (
 	cdnAccessKeyId     = flag.String("cdn-access-key-id", "", "cdn Access Key ID")
 	cdnAccessKeySecret = flag.String("cdn-access-key-secret", "", "cdn Access Key Secret")
 	platform           = flag.String("platform", "aliyun", "platform")
+	cdnPlatform           = flag.String("cdn-platform", "", "platform")
+	dnsPlatform           = flag.String("dns-platform", "", "platform")
 )
 
 func init() {
@@ -33,6 +35,8 @@ func init() {
 	}
 	Cfg = config.Config{
 		Platform: ptrlib.ToValue(platform, ""),
+		CDNPlatform: ptrlib.ToValue(cdnPlatform, ""),
+		DNSPlatform: ptrlib.ToValue(dnsPlatform, ""),
 		CertOnly: tea.BoolValue(certOnly),
 		Renew:    tea.BoolValue(renew),
 		Domain:   ptrlib.ToValue(domain, ""),
@@ -47,6 +51,13 @@ func init() {
 			AccessKeySecret: ptrlib.ToValue(cdnAccessKeySecret, ""),
 		},
 	}
+	if len(Cfg.CDNPlatform) < 2 {
+		Cfg.CDNPlatform = Cfg.Platform
+	}
+	if len(Cfg.DNSPlatform) < 2 {
+		Cfg.DNSPlatform = Cfg.Platform
+	}
+	
 	if len(Cfg.Domain)*len(Cfg.Email) == 0 {
 		fmt.Println("Domain or Email is required")
 		os.Exit(1)
