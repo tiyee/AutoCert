@@ -10,7 +10,7 @@ import (
 )
 
 func CertOnly(cfg config.Config) {
-	af := applicant.GetApplicant(cfg.Platform)
+	af := applicant.GetApplicant(cfg.DNSPlatform)
 	if af == nil {
 		fmt.Println("apply Platform not supported")
 		return
