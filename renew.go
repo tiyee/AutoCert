@@ -10,7 +10,7 @@ import (
 )
 
 func Renew(cfg config.Config) {
-	df := deployer.GetDeployer(cfg.Platform)
+	df := deployer.GetDeployer(cfg.CDNPlatform)
 	if df == nil {
 		fmt.Println("deploy Platform not supported")
 		return
@@ -38,7 +38,7 @@ func Renew(cfg config.Config) {
 		return
 	}
 
-	af := applicant.GetApplicant(cfg.Platform)
+	af := applicant.GetApplicant(cfg.DNSPlatform)
 	if af == nil {
 		fmt.Println("apply Platform not supported")
 		return
