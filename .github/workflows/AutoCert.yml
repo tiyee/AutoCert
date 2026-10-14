@@ -57,5 +57,6 @@ jobs:
       run: ./AutoCert --domain=${{vars.DOMAINSJOY}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{secrets.SJOY_DNS_AK}} --dns-access-key-secret=${{secrets.SJOY_DNS_SK}} --cdn-access-key-id=${{secrets.SEED_CDN_AK}} --cdn-access-key-secret=${{secrets.SEED_CDN_SK}} --platform=tencent --cdn-platform=aliyun 
     - name: ${{vars.DOMAINSSEED}}
       run: ./AutoCert --domain=${{vars.DOMAINSSEED}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{secrets.SSEED_DNS_AK}} --dns-access-key-secret=${{secrets.SSEED_DNS_SK}} --cdn-access-key-id=${{secrets.SEED_CDN_AK}} --cdn-access-key-secret=${{secrets.SEED_CDN_SK}} --platform=tencent --cdn-platform=aliyun 
-
+    - name: ${{vars.DOMAINSJAYNA}}
+      run: ./AutoCert --domain=${{vars.DOMAINGKZYB}} --email=${{env.EMAIL}} --product=cdn --renew --dns-access-key-id=${{secrets.SJAYNA_DNS_AK}} --dns-access-key-secret=${{secrets.SJAYNA_DNS_SK}} --cdn-access-key-id=${{secrets.SJAYNA_CDN_AK}} --cdn-access-key-secret=${{secrets.SJAYNA_CDN_SK}}
 
