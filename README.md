@@ -209,7 +209,20 @@ CDN_REGION='ap-southeast-1'
 4. 在 Actions 页面手动运行 `Certonly`，完成首次申请并部署；每次运行都会重新申请，已有证书的日常续期应运行 `AutoCert`。也可按前文“首次申请并部署”在服务器上完成签发。
 5. 在 Actions 页面手动运行 `AutoCert`，确认每个域名的结果后，再依赖定时任务。
 
-通用凭据使用以下 Repository Secrets：
+首次申请与续期工作流均包含 11 个域名步骤，并按下面的映射读取账号凭据。仅前三个域名使用默认账号，其余域名使用各自步骤指定的账号；DNS 与证书部署凭据分别配置。
+
+| 域名变量 | DNS 凭据 Secrets（AK / SK） | 部署凭据 Secrets（AK / SK） | DNS / 部署平台 |
+| --- | --- | --- | --- |
+| `DOMAINTOOLS`、`DOMAINCLASSROOMS`、`DOMAINICUA` | `DNSACCESSKEYID` / `DNSACCESSKEYSECRET` | `CDNACCESSKEYID` / `CDNACCESSKEYSECRET` | 阿里云 DNS / 阿里云 CDN |
+| `DOMAINSDREAM` | `AVAR_DNS_AK` / `AVAR_DNS_SK` | `AVAR_CDN_AK` / `AVAR_CDN_SK` | 阿里云 DNS / 阿里云 CDN |
+| `DOMAINSJW`、`DOMAINSQTWL`、`DOMAINVQTWL`、`DOMAINGKZYB` | `QT_DNS_AK` / `QT_DNS_SK` | `QT_CDN_AK` / `QT_CDN_SK` | 阿里云 DNS / 阿里云 CDN |
+| `DOMAINSJOY` | `SJOY_DNS_AK` / `SJOY_DNS_SK` | `SEED_CDN_AK` / `SEED_CDN_SK` | 腾讯云 DNS / 阿里云 CDN |
+| `DOMAINSSEED` | `SSEED_DNS_AK` / `SSEED_DNS_SK` | `SEED_CDN_AK` / `SEED_CDN_SK` | 腾讯云 DNS / 阿里云 CDN |
+| `DOMAINSJAYNA` | `SJAYNA_DNS_AK` / `SJAYNA_DNS_SK` | `SJAYNA_CDN_AK` / `SJAYNA_CDN_SK` | 阿里云 DNS / 阿里云 CDN |
+
+`EMAIL` 为共用申请邮箱。以上映射沿用现有 Secret 名称，无需新增按域名命名的 Secrets；如果调整某个域名的账号，需同时修改两个工作流中该域名步骤的 `env` 引用。
+
+默认账号使用以下 Repository Secrets：
 
 | Secret | 内容 | 是否必填 |
 | --- | --- | --- |
@@ -223,7 +236,7 @@ CDN_REGION='ap-southeast-1'
 
 域名填写在工作流所引用的 Repository Variables 中，例如 `DOMAINTOOLS`。可以保留该变量名并填入自己的域名，也可以同时修改变量名和工作流引用。泛域名填写 `*.example.com`，不要在变量值中额外加引号。
 
-使用专用账号的步骤，Secret 名称以该步骤的 `env` 为准。例如 `AVAR_DNS_AK` / `AVAR_DNS_SK` 对应 `AVAR_DNS_SECURITY_TOKEN`，`SEED_CDN_AK` / `SEED_CDN_SK` 对应 `SEED_CDN_SECURITY_TOKEN`。未使用的步骤应删除，避免缺少配置导致任务失败。
+使用专用账号的步骤，Secret 名称以该步骤的 `env` 为准。例如 `AVAR_DNS_AK` / `AVAR_DNS_SK` 对应 `AVAR_DNS_SECURITY_TOKEN`，`SEED_CDN_AK` / `SEED_CDN_SK` 对应 `SEED_CDN_SECURITY_TOKEN`。每组 STS Token 必须与对应 AK/SK 来自同一次会话，不会使用其他账号的默认 Token。未使用的步骤应在两个工作流中删除，避免缺少配置导致任务失败。
 
 默认平台为阿里云 DNS + 阿里云 CDN。使用 ESA/EdgeOne 时，需要在对应步骤的命令中添加 `--dns-platform=esa`、`--cdn-platform=teo` 等实际组合；也可添加 `--dns-site-id`、`--cdn-site-id` 和区域参数。凭据继续通过 Secrets 注入，站点 ID 和区域可放在 Repository Variables 中。
 
