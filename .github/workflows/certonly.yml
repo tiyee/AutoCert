@@ -45,222 +45,35 @@ jobs:
       id: compile
       run: go build -o AutoCert cmd/main.go
     - name: ${{ vars.DOMAINTOOLS || 'DOMAINTOOLS' }}
-      id: apply_1
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINTOOLS}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{env.DNSAccessKeyId}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{env.DNSAccessKeySecret}}
-        TASK_DNS_SECURITY_TOKEN: ${{ env.DNSSecurityToken }}
-        TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
-        TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINTOOLS）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINTOOLS），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINTOOLS}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{env.DNSAccessKeyId}}" --dns-access-key-secret="${{env.DNSAccessKeySecret}}" --cdn-access-key-id="${{env.CDNAccessKeyId}}" --cdn-access-key-secret="${{env.CDNAccessKeySecret}}" --dns-security-token="${{ env.DNSSecurityToken }}" --cdn-security-token="${{ env.CDNSecurityToken }}"
     - name: ${{ vars.DOMAINCLASSROOMS || 'DOMAINCLASSROOMS' }}
-      id: apply_2
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINCLASSROOMS}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{env.DNSAccessKeyId}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{env.DNSAccessKeySecret}}
-        TASK_DNS_SECURITY_TOKEN: ${{ env.DNSSecurityToken }}
-        TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
-        TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINCLASSROOMS）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINCLASSROOMS），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINCLASSROOMS}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{env.DNSAccessKeyId}}" --dns-access-key-secret="${{env.DNSAccessKeySecret}}" --cdn-access-key-id="${{env.CDNAccessKeyId}}" --cdn-access-key-secret="${{env.CDNAccessKeySecret}}" --dns-security-token="${{ env.DNSSecurityToken }}" --cdn-security-token="${{ env.CDNSecurityToken }}"
     - name: ${{ vars.DOMAINICUA || 'DOMAINICUA' }}
-      id: apply_3
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINICUA}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{env.DNSAccessKeyId}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{env.DNSAccessKeySecret}}
-        TASK_DNS_SECURITY_TOKEN: ${{ env.DNSSecurityToken }}
-        TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
-        TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINICUA）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINICUA），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINICUA}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{env.DNSAccessKeyId}}" --dns-access-key-secret="${{env.DNSAccessKeySecret}}" --cdn-access-key-id="${{env.CDNAccessKeyId}}" --cdn-access-key-secret="${{env.CDNAccessKeySecret}}" --dns-security-token="${{ env.DNSSecurityToken }}" --cdn-security-token="${{ env.CDNSecurityToken }}"
     - name: ${{ vars.DOMAINSDREAM || 'DOMAINSDREAM' }}
-      id: apply_4
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINSDREAM}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.AVAR_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.AVAR_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.AVAR_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.AVAR_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.AVAR_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.AVAR_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINSDREAM）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINSDREAM），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINSDREAM}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.AVAR_DNS_AK}}" --dns-access-key-secret="${{secrets.AVAR_DNS_SK}}" --cdn-access-key-id="${{secrets.AVAR_CDN_AK}}" --cdn-access-key-secret="${{secrets.AVAR_CDN_SK}}" --dns-security-token="${{ secrets.AVAR_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.AVAR_CDN_SECURITY_TOKEN }}"
     - name: ${{ vars.DOMAINSJW || 'DOMAINSJW' }}
-      id: apply_5
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINSJW}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.QT_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.QT_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.QT_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINSJW）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINSJW），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINSJW}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.QT_DNS_AK}}" --dns-access-key-secret="${{secrets.QT_DNS_SK}}" --cdn-access-key-id="${{secrets.QT_CDN_AK}}" --cdn-access-key-secret="${{secrets.QT_CDN_SK}}" --dns-security-token="${{ secrets.QT_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.QT_CDN_SECURITY_TOKEN }}"
     - name: ${{ vars.DOMAINSQTWL || 'DOMAINSQTWL' }}
-      id: apply_6
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINSQTWL}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.QT_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.QT_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.QT_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINSQTWL）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINSQTWL），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINSQTWL}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.QT_DNS_AK}}" --dns-access-key-secret="${{secrets.QT_DNS_SK}}" --cdn-access-key-id="${{secrets.QT_CDN_AK}}" --cdn-access-key-secret="${{secrets.QT_CDN_SK}}" --dns-security-token="${{ secrets.QT_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.QT_CDN_SECURITY_TOKEN }}"
     - name: ${{ vars.DOMAINVQTWL || 'DOMAINVQTWL' }}
-      id: apply_7
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINVQTWL}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.QT_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.QT_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.QT_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINVQTWL）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINVQTWL），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINVQTWL}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.QT_DNS_AK}}" --dns-access-key-secret="${{secrets.QT_DNS_SK}}" --cdn-access-key-id="${{secrets.QT_CDN_AK}}" --cdn-access-key-secret="${{secrets.QT_CDN_SK}}" --dns-security-token="${{ secrets.QT_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.QT_CDN_SECURITY_TOKEN }}"
     - name: ${{ vars.DOMAINGKZYB || 'DOMAINGKZYB' }}
-      id: apply_8
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINGKZYB}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.QT_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.QT_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.QT_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINGKZYB）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINGKZYB），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINGKZYB}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.QT_DNS_AK}}" --dns-access-key-secret="${{secrets.QT_DNS_SK}}" --cdn-access-key-id="${{secrets.QT_CDN_AK}}" --cdn-access-key-secret="${{secrets.QT_CDN_SK}}" --dns-security-token="${{ secrets.QT_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.QT_CDN_SECURITY_TOKEN }}"
     - name: ${{ vars.DOMAINSJOY || 'DOMAINSJOY' }}
-      id: apply_9
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINSJOY}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.SJOY_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.SJOY_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.SJOY_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.SEED_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SEED_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.SEED_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINSJOY）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINSJOY），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINSJOY}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.SJOY_DNS_AK}}" --dns-access-key-secret="${{secrets.SJOY_DNS_SK}}" --cdn-access-key-id="${{secrets.SEED_CDN_AK}}" --cdn-access-key-secret="${{secrets.SEED_CDN_SK}}" --platform=tencent --cdn-platform=aliyun --dns-security-token="${{ secrets.SJOY_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.SEED_CDN_SECURITY_TOKEN }}"
     - name: ${{ vars.DOMAINSSEED || 'DOMAINSSEED' }}
-      id: apply_10
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINSSEED}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.SSEED_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.SSEED_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.SSEED_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.SEED_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SEED_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.SEED_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINSSEED）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINSSEED），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINSSEED}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.SSEED_DNS_AK}}" --dns-access-key-secret="${{secrets.SSEED_DNS_SK}}" --cdn-access-key-id="${{secrets.SEED_CDN_AK}}" --cdn-access-key-secret="${{secrets.SEED_CDN_SK}}" --platform=tencent --cdn-platform=aliyun --dns-security-token="${{ secrets.SSEED_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.SEED_CDN_SECURITY_TOKEN }}"
     - name: ${{ vars.DOMAINSJAYNA || 'DOMAINSJAYNA' }}
-      id: apply_11
       continue-on-error: true
-      env:
-        TASK_DOMAIN: ${{vars.DOMAINSJAYNA}}
-        TASK_EMAIL: ${{env.EMAIL}}
-        TASK_DNS_ACCESS_KEY_ID: ${{secrets.SJAYNA_DNS_AK}}
-        TASK_DNS_ACCESS_KEY_SECRET: ${{secrets.SJAYNA_DNS_SK}}
-        TASK_DNS_SECURITY_TOKEN: ${{ secrets.SJAYNA_DNS_SECURITY_TOKEN }}
-        TASK_CDN_ACCESS_KEY_ID: ${{secrets.SJAYNA_CDN_AK}}
-        TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SJAYNA_CDN_SK}}
-        TASK_CDN_SECURITY_TOKEN: ${{ secrets.SJAYNA_CDN_SECURITY_TOKEN }}
-      run: |
-        printf '[%s] 开始首次申请并部署（DOMAINSJAYNA）\n' "${TASK_DOMAIN:-未配置}"
-        if ./AutoCert --certonly --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
-          printf '[%s] 首次申请并部署完成\n' "${TASK_DOMAIN:-未配置}"
-        else
-          status=$?
-          printf '[%s] 首次申请或部署失败（DOMAINSJAYNA），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
-        fi
+      run: ./AutoCert --certonly --domain="${{vars.DOMAINSJAYNA}}" --email="${{env.EMAIL}}" --product=cdn --dns-access-key-id="${{secrets.SJAYNA_DNS_AK}}" --dns-access-key-secret="${{secrets.SJAYNA_DNS_SK}}" --cdn-access-key-id="${{secrets.SJAYNA_CDN_AK}}" --cdn-access-key-secret="${{secrets.SJAYNA_CDN_SK}}" --dns-security-token="${{ secrets.SJAYNA_DNS_SECURITY_TOKEN }}" --cdn-security-token="${{ secrets.SJAYNA_CDN_SECURITY_TOKEN }}"

@@ -9,13 +9,14 @@ import (
 )
 
 func main() {
-	AutoCert.InitCLI()
+	if !AutoCert.InitCLI() || !AutoCert.ValidApplyCfg() {
+		return
+	}
 	cfg := AutoCert.Cfg
-	AutoCert.ValidApplyCfg()
 	f := applicant.GetApplicant(cfg.DNSPlatform)
 	if f == nil {
-		fmt.Fprintln(os.Stderr, "apply Platform not supported")
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "[%s] apply platform %q not supported\n", cfg.Domain, cfg.DNSPlatform)
+		return
 	}
 	client := f(applicant.WithDomain(cfg.Domain),
 		applicant.WithEmail(cfg.Email),
@@ -24,8 +25,8 @@ func main() {
 		applicant.WithNameservers("1.1.1.1;8.8.8.8"))
 	lst, err := client.Apply()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "[%s] apply: %v\n", cfg.Domain, err)
+		return
 	}
 	fmt.Println(lst)
 }

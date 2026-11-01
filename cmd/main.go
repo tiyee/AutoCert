@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	AutoCert.InitCLI()
-	AutoCert.ValidApplyCfg()
-	AutoCert.ValidDeployCfg()
+	if !AutoCert.InitCLI() || !AutoCert.ValidApplyCfg() || !AutoCert.ValidDeployCfg() {
+		return
+	}
 	var err error
 	if AutoCert.Cfg.CertOnly {
 		err = AutoCert.CertOnly(AutoCert.Cfg)
@@ -18,7 +18,6 @@ func main() {
 		err = AutoCert.Renew(AutoCert.Cfg)
 	}
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "[%s] %v\n", AutoCert.Cfg.Domain, err)
 	}
 }

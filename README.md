@@ -220,7 +220,7 @@ CDN_REGION='ap-southeast-1'
 | `DOMAINSSEED` | `SSEED_DNS_AK` / `SSEED_DNS_SK` | `SEED_CDN_AK` / `SEED_CDN_SK` | 腾讯云 DNS / 阿里云 CDN |
 | `DOMAINSJAYNA` | `SJAYNA_DNS_AK` / `SJAYNA_DNS_SK` | `SJAYNA_CDN_AK` / `SJAYNA_CDN_SK` | 阿里云 DNS / 阿里云 CDN |
 
-`EMAIL` 为共用申请邮箱。以上映射沿用现有 Secret 名称，无需新增按域名命名的 Secrets；如果调整某个域名的账号，需同时修改两个工作流中该域名步骤的 `env` 引用。
+`EMAIL` 为共用申请邮箱。以上映射沿用现有 Secret 名称，无需新增按域名命名的 Secrets；如果调整某个域名的账号，需同时修改两个工作流中该域名命令的凭据参数引用。
 
 默认账号使用以下 Repository Secrets：
 
@@ -236,11 +236,11 @@ CDN_REGION='ap-southeast-1'
 
 域名填写在工作流所引用的 Repository Variables 中，例如 `DOMAINTOOLS`。可以保留该变量名并填入自己的域名，也可以同时修改变量名和工作流引用。泛域名填写 `*.example.com`，不要在变量值中额外加引号。
 
-使用专用账号的步骤，Secret 名称以该步骤的 `env` 为准。例如 `AVAR_DNS_AK` / `AVAR_DNS_SK` 对应 `AVAR_DNS_SECURITY_TOKEN`，`SEED_CDN_AK` / `SEED_CDN_SK` 对应 `SEED_CDN_SECURITY_TOKEN`。每组 STS Token 必须与对应 AK/SK 来自同一次会话，不会使用其他账号的默认 Token。未使用的步骤应在两个工作流中删除，避免缺少配置导致任务失败。
+使用专用账号的步骤，Secret 名称以该步骤的命令参数为准。例如 `AVAR_DNS_AK` / `AVAR_DNS_SK` 对应 `AVAR_DNS_SECURITY_TOKEN`，`SEED_CDN_AK` / `SEED_CDN_SK` 对应 `SEED_CDN_SECURITY_TOKEN`。每组 STS Token 必须与对应 AK/SK 来自同一次会话，不会使用其他账号的默认 Token。未使用的步骤应在两个工作流中删除，避免缺少配置导致处理失败。
 
 默认平台为阿里云 DNS + 阿里云 CDN。使用 ESA/EdgeOne 时，需要在对应步骤的命令中添加 `--dns-platform=esa`、`--cdn-platform=teo` 等实际组合；也可添加 `--dns-site-id`、`--cdn-site-id` 和区域参数。凭据继续通过 Secrets 注入，站点 ID 和区域可放在 Repository Variables 中。
 
-`AutoCert` 的定时表达式为 `30 5 */5 * *`：在每月的 1、6、11、16、21、26、31 日（当月存在该日期时），UTC 05:30、北京时间 13:30 运行，并非严格每隔 120 小时。`Certonly` 不定时运行。两个工作流都为每个域名使用独立步骤，日志会先显示域名和配置变量名。申请或部署失败时，直接打印程序错误和该域名的退出码，然后继续处理其余域名；不会再执行统一的失败汇总或 `exit 1`。
+`AutoCert` 的定时表达式为 `30 5 */5 * *`：在每月的 1、6、11、16、21、26、31 日（当月存在该日期时），UTC 05:30、北京时间 13:30 运行，并非严格每隔 120 小时。`Certonly` 不定时运行。两个工作流都为每个域名使用独立步骤，每步直接执行一行 `./AutoCert ...` 命令。程序遇到错误会打印域名和具体错误，并正常返回；后续域名继续执行。步骤保留 `continue-on-error: true`，进程异常失败时也继续后续域名。
 
 查看 Actions 中对应域名的步骤即可找到完整错误。域名处理失败不会使整个工作流失败，因此工作流显示成功不代表所有域名都处理成功，请检查各域名日志。依赖下载或构建失败仍会使工作流失败。
 
@@ -295,7 +295,7 @@ STS Token 会过期，不宜将一次获取的短期 Token 当作长期定时任
 | DNS 验证超时 | 检查 NS 是否生效、TXT 能否公开查询、CNAME 委派及 CAA 限制；ESA/EdgeOne 验证最多等待 20 分钟 |
 | 上传成功但域名仍是旧证书 | 先确认是否选择了仅上传的 `tencent`；EdgeOne 检查绑定结果，ESA/EdgeOne 等待节点生效后再检查实际 HTTPS |
 | 提示证书仍在部署中 | 等待云端部署完成后重试，不要反复执行首次申请 |
-| 某个域名处理失败 | 打开对应域名步骤，查看原始错误及退出码；其他域名仍会继续处理，无需全部重新签发 |
+| 某个域名处理失败 | 打开对应域名步骤，查看包含域名的具体错误；其他域名仍会继续处理，无需全部重新签发 |
 | 工作流成功但个别域名未更新 | 域名错误只打印日志、不会使工作流失败；请检查各域名步骤 |
 
-程序出错返回非零退出码；证书无需续期时返回成功。排查问题时只提供脱敏错误码，不要公开 AK、SK、Token 或私钥。
+三个命令入口在参数、配置、申请、查询或部署报错时打印错误并正常返回（退出码 0），不会继续当前域名的处理。配置和业务错误输出到 stderr，包含域名及错误原因；参数语法错误由参数解析器打印。请以日志判断各域名的处理结果。排查问题时只提供脱敏错误码，不要公开 AK、SK、Token 或私钥。

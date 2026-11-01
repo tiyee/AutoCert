@@ -35,16 +35,19 @@ var (
 	dnsPlatform        = flag.String("dns-platform", "", "platform")
 )
 
-// InitCLI 由命令入口调用，导入包不解析参数或退出进程。
-func InitCLI() {
-	flag.Parse()
+// InitCLI 解析参数；打印帮助、版本或配置错误后返回 false，入口无需继续处理。
+func InitCLI() bool {
+	flag.CommandLine.Init(os.Args[0], flag.ContinueOnError)
+	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
+		return false
+	}
 	if *version {
 		v := "dev"
 		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" && info.Main.Version != "(devel)" {
 			v = info.Main.Version
 		}
 		fmt.Println("AutoCert", v)
-		os.Exit(0)
+		return false
 	}
 	if !*certOnly {
 		*renew = false
@@ -72,26 +75,25 @@ func InitCLI() {
 	}
 	Cfg = Cfg.WithDefaults()
 
-	if len(Cfg.Domain)*len(Cfg.Email) == 0 {
-		fmt.Println("Domain or Email is required")
-		os.Exit(1)
-		return
+	if Cfg.Domain == "" || Cfg.Email == "" {
+		fmt.Fprintf(os.Stderr, "[%s] configuration: Domain or Email is required\n", Cfg.Domain)
+		return false
 	}
-
+	return true
 }
-func ValidApplyCfg() {
+func ValidApplyCfg() bool {
 	cfg := Cfg
-	if len(cfg.DNSCredentials.AccessKeySecret)*len(cfg.DNSCredentials.AccessKeyId) == 0 {
-		fmt.Println("DNSAccessKeyID or DNSAccessKeySecret is required")
-		os.Exit(1)
-		return
+	if cfg.DNSCredentials.AccessKeySecret == "" || cfg.DNSCredentials.AccessKeyId == "" {
+		fmt.Fprintf(os.Stderr, "[%s] configuration: DNSAccessKeyID or DNSAccessKeySecret is required\n", cfg.Domain)
+		return false
 	}
+	return true
 }
-func ValidDeployCfg() {
+func ValidDeployCfg() bool {
 	cfg := Cfg
-	if len(cfg.CertCredentials.AccessKeySecret)*len(cfg.CertCredentials.AccessKeyId) == 0 {
-		fmt.Println("CertAccessKeyID or CertAccessKeySecret is required")
-		os.Exit(1)
-		return
+	if cfg.CertCredentials.AccessKeySecret == "" || cfg.CertCredentials.AccessKeyId == "" {
+		fmt.Fprintf(os.Stderr, "[%s] configuration: CertAccessKeyID or CertAccessKeySecret is required\n", cfg.Domain)
+		return false
 	}
+	return true
 }
