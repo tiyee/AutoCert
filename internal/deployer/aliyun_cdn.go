@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"sort"
-	"strconv"
 	"time"
 
 	cdn20180510 "github.com/alibabacloud-go/cdn-20180510/v5/client"
@@ -20,8 +18,13 @@ func init() {
 	RegisterDeployer("aliyun", NewAliyunCdn)
 }
 
+type aliyunAPI interface {
+	SetCdnDomainSSLCertificateWithOptions(*cdn20180510.SetCdnDomainSSLCertificateRequest, *util.RuntimeOptions) (*cdn20180510.SetCdnDomainSSLCertificateResponse, error)
+	DescribeDomainCertificateInfoWithOptions(*cdn20180510.DescribeDomainCertificateInfoRequest, *util.RuntimeOptions) (*cdn20180510.DescribeDomainCertificateInfoResponse, error)
+}
+
 type AliyunCdn struct {
-	client  *cdn20180510.Client
+	client  aliyunAPI
 	options *Options
 }
 
@@ -31,7 +34,7 @@ func NewAliyunCdn(option ...Option) (IDeployer, error) {
 	a := &AliyunCdn{
 		options: opts,
 	}
-	client, err := a.createClient(opts.AccessKeyId, opts.AccessKeySecret)
+	client, err := a.createClient(opts.AccessKeyId, opts.AccessKeySecret, opts.SecurityToken)
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +63,9 @@ func (a *AliyunCdn) Deploy(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	if resp == nil || resp.StatusCode == nil {
+		return fmt.Errorf("deploy returned an empty response")
+	}
 	if tea.Int32Value(resp.StatusCode) < 200 || tea.Int32Value(resp.StatusCode) >= 300 {
 		return fmt.Errorf("set cdn domain ssl certificate failed")
 	}
@@ -68,34 +74,30 @@ func (a *AliyunCdn) Deploy(ctx context.Context) error {
 }
 
 func (a *AliyunCdn) Search(domain string) ([]CertStat, error) {
-	describeCdnSSLCertificateListRequest := &cdn20180510.DescribeCdnSSLCertificateListRequest{
-		DomainName:    tea.String(a.options.Domain),
-		PageNumber:    tea.Int64(1),
-		PageSize:      tea.Int64(20),
-		SearchKeyword: tea.String(domain),
-	}
-	runtime := &util.RuntimeOptions{}
-	resp, err := a.client.DescribeCdnSSLCertificateListWithOptions(describeCdnSSLCertificateListRequest, runtime)
+	resp, err := a.client.DescribeDomainCertificateInfoWithOptions(&cdn20180510.DescribeDomainCertificateInfoRequest{DomainName: tea.String(domain)}, &util.RuntimeOptions{})
 	if err != nil {
 		return nil, err
 	}
-	if tea.Int32Value(resp.StatusCode) != http.StatusOK {
-		return nil, err
+	if resp == nil || resp.StatusCode == nil || tea.Int32Value(resp.StatusCode) != http.StatusOK || resp.Body == nil {
+		return nil, fmt.Errorf("query domain certificate returned an invalid response")
 	}
-	total := tea.Int32Value(resp.Body.CertificateListModel.Count)
-	if total < 1 {
-		return []CertStat{}, err
+	if resp.Body.CertInfos == nil {
+		return nil, nil
 	}
-	results := make([]CertStat, 0, total)
-	for _, item := range resp.Body.CertificateListModel.CertList.Cert {
-		results = append(results, CertStat{
-			LastTime:    tea.Int64Value(item.LastTime) / 1000,
-			Fingerprint: tea.StringValue(item.Fingerprint),
-			CertName:    tea.StringValue(item.CertName),
-			CertId:      strconv.FormatInt(tea.Int64Value(item.CertId), 10),
-		})
+	var results []CertStat
+	for _, item := range resp.Body.CertInfos.CertInfo {
+		if item == nil {
+			return nil, fmt.Errorf("query domain certificate returned an empty item")
+		}
+		if tea.StringValue(item.ServerCertificateStatus) != "on" {
+			continue
+		}
+		end, err := time.Parse(time.RFC3339, tea.StringValue(item.CertExpireTime))
+		if err != nil {
+			return nil, fmt.Errorf("invalid domain certificate expiration: %w", err)
+		}
+		results = append(results, CertStat{LastTime: end.Unix(), CertName: tea.StringValue(item.CertName), CertId: tea.StringValue(item.CertId)})
 	}
-	sort.Sort(sort.Reverse(CertStats(results)))
 	return results, nil
 }
 
@@ -103,10 +105,11 @@ func (a *AliyunCdn) SetCertificate(cert applicant.Certificate) {
 	a.options.Certificate = cert
 }
 
-func (a *AliyunCdn) createClient(accessKeyId, accessKeySecret string) (_result *cdn20180510.Client, _err error) {
+func (a *AliyunCdn) createClient(accessKeyId, accessKeySecret, securityToken string) (_result *cdn20180510.Client, _err error) {
 	config := &openapi.Config{
 		AccessKeyId:     tea.String(accessKeyId),
 		AccessKeySecret: tea.String(accessKeySecret),
+		SecurityToken:   tea.String(securityToken),
 	}
 	config.Endpoint = tea.String("cdn.aliyuncs.com")
 	_result = &cdn20180510.Client{}

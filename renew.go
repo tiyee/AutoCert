@@ -4,60 +4,49 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tiyee/AutoCert/internal/applicant"
 	"github.com/tiyee/AutoCert/internal/config"
 	"github.com/tiyee/AutoCert/internal/deployer"
 )
 
-func Renew(cfg config.Config) {
-	df := deployer.GetDeployer(cfg.CDNPlatform)
-	if df == nil {
-		fmt.Println("deploy Platform not supported")
-		return
-	}
-	sslClient, err := df(deployer.WithDomain(cfg.Domain),
-		deployer.WithAccessKeyId(cfg.CertCredentials.AccessKeyId),
-		deployer.WithAccessKeySecret(cfg.CertCredentials.AccessKeySecret),
-		deployer.WithVariables(make(map[string]string)))
+func Renew(cfg config.Config) error {
+	cfg = cfg.WithDefaults()
+	applyClient, err := newApplicant(cfg)
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		return err
 	}
-
+	sslClient, err := newDeployer(cfg)
+	if err != nil {
+		return err
+	}
 	certs, err := sslClient.Search(cfg.Domain)
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		return fmt.Errorf("search: %w", err)
 	}
-	if len(certs) == 0 {
-		fmt.Println("no certs found")
-		return
+	selected, ok := deployer.LatestCertificate(certs)
+	if selector, hasSelector := sslClient.(deployer.RenewalSelector); hasSelector {
+		selected, ok = selector.SelectRenewalCertificate(certs)
 	}
-	if !certs[0].Renewable() {
+	if !ok {
+		return fmt.Errorf("no certs found; use --certonly for initial issuance")
+	}
+	if selected.LastTime <= 0 {
+		return fmt.Errorf("certificate has no valid expiration time")
+	}
+	if !selected.Renewable() {
 		fmt.Println("Certificate no need renew")
-		return
+		return nil
 	}
-
-	af := applicant.GetApplicant(cfg.DNSPlatform)
-	if af == nil {
-		fmt.Println("apply Platform not supported")
-		return
-	}
-
-	applyClient := af(applicant.WithDomain(cfg.Domain),
-		applicant.WithEmail(cfg.Email),
-		applicant.WithAccessKeyId(cfg.DNSCredentials.AccessKeyId),
-		applicant.WithAccessKeySecret(cfg.DNSCredentials.AccessKeySecret),
-		applicant.WithNameservers("1.1.1.1;8.8.8.8"))
 	certificate, err := applyClient.Apply()
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		return fmt.Errorf("apply: %w", err)
+	}
+	if certificate == nil {
+		return fmt.Errorf("apply returned no certificate")
 	}
 	sslClient.SetCertificate(*certificate)
-	if err := sslClient.Deploy(context.Background()); err == nil {
-		fmt.Println("Successfully deployed")
-	} else {
-		fmt.Println(err.Error())
+	if err = sslClient.Deploy(context.Background()); err != nil {
+		return fmt.Errorf("deploy: %w", err)
 	}
+	reportSuccess(cfg.CDNPlatform)
+	return nil
 }

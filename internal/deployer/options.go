@@ -5,6 +5,9 @@ import (
 )
 
 type Options struct {
+	SiteID          string                `json:"siteId"`
+	Region          string                `json:"region"`
+	SecurityToken   string                `json:"securityToken"`
 	Domain          string                `json:"domain"`
 	AccessKeyId     string                `json:"accessKeyId"`
 	AccessKeySecret string                `json:"accessKeySecret"`
@@ -46,3 +49,10 @@ func WithVariables(v map[string]string) Option {
 		opts.Variables = v
 	}
 }
+
+func WithSecurityToken(v string) Option {
+	return func(opts *Options) { opts.SecurityToken = v }
+}
+
+func WithSiteID(v string) Option { return func(opts *Options) { opts.SiteID = v } }
+func WithRegion(v string) Option { return func(opts *Options) { opts.Region = v } }

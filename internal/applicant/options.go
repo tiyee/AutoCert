@@ -1,6 +1,9 @@
 package applicant
 
 type Options struct {
+	SiteID          string `json:"siteId"`
+	Region          string `json:"region"`
+	SecurityToken   string `json:"securityToken"`
 	Email           string `json:"email"`
 	Domain          string `json:"domain"`
 	AccessKeyId     string `json:"accessKeyId"`
@@ -42,3 +45,10 @@ func WithNameservers(v string) Option {
 		opts.Nameservers = v
 	}
 }
+
+func WithSecurityToken(v string) Option {
+	return func(opts *Options) { opts.SecurityToken = v }
+}
+
+func WithSiteID(v string) Option { return func(opts *Options) { opts.SiteID = v } }
+func WithRegion(v string) Option { return func(opts *Options) { opts.Region = v } }

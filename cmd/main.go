@@ -1,14 +1,24 @@
 package main
 
-import "github.com/tiyee/AutoCert"
+import (
+	"fmt"
+	"os"
+
+	"github.com/tiyee/AutoCert"
+)
 
 func main() {
+	AutoCert.InitCLI()
 	AutoCert.ValidApplyCfg()
 	AutoCert.ValidDeployCfg()
+	var err error
 	if AutoCert.Cfg.CertOnly {
-		AutoCert.CertOnly(AutoCert.Cfg)
+		err = AutoCert.CertOnly(AutoCert.Cfg)
 	} else {
-		AutoCert.Renew(AutoCert.Cfg)
+		err = AutoCert.Renew(AutoCert.Cfg)
 	}
-
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }

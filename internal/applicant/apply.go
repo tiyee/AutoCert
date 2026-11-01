@@ -6,7 +6,6 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"strings"
-	"time"
 
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/go-acme/lego/v4/challenge"
@@ -64,8 +63,7 @@ func apply(option *Options, provider challenge.Provider) (*Certificate, error) {
 	nameservers := ParseNameservers(option.Nameservers)
 	if len(nameservers) > 0 {
 		challengeOptions = append(challengeOptions,
-			dns01.AddRecursiveNameservers(nameservers),
-			dns01.PropagationWait(time.Second, true))
+			dns01.AddRecursiveNameservers(nameservers))
 	}
 
 	if err := client.Challenge.SetDNS01Provider(provider, challengeOptions...); err != nil {
@@ -78,13 +76,7 @@ func apply(option *Options, provider challenge.Provider) (*Certificate, error) {
 
 	user.SetRegistration(reg)
 
-	domains := []string{option.Domain}
-
-	// 如果是通配置符域名，把根域名也加入
-	if strings.HasPrefix(option.Domain, "*.") && len(strings.Split(option.Domain, ".")) == 3 {
-		rootDomain := strings.TrimPrefix(option.Domain, "*.")
-		domains = append(domains, rootDomain)
-	}
+	domains := certificateDomains(option.Domain)
 
 	request := certificate.ObtainRequest{
 		Domains: domains,
@@ -122,4 +114,12 @@ func ParseNameservers(ns string) []string {
 	}
 
 	return nameservers
+}
+
+func certificateDomains(domain string) []string {
+	domains := []string{domain}
+	if strings.HasPrefix(domain, "*.") {
+		domains = append(domains, strings.TrimPrefix(domain, "*."))
+	}
+	return domains
 }

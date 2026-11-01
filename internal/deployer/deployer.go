@@ -2,7 +2,6 @@ package deployer
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/tiyee/AutoCert/internal/applicant"
@@ -34,12 +33,10 @@ func RegisterDeployer(platform string, f deployerFactory) {
 }
 
 func (s CertStat) Expired() bool {
-	fmt.Println("last_time:", time.Unix(s.LastTime, 0).Format(time.DateTime))
-	return s.LastTime < time.Now().Unix()
+	return s.LastTime <= time.Now().Unix()
 }
 func (s CertStat) Renewable() bool {
-	fmt.Println("last_time:", time.Unix(s.LastTime, 0).Format(time.DateTime))
-	return s.LastTime-10*3600*24 < time.Now().Unix()
+	return s.renewableAt(time.Now())
 }
 
 type CertStats []CertStat
@@ -54,4 +51,28 @@ func (c CertStats) Less(i, j int) bool {
 
 func (c CertStats) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
+}
+
+func (s CertStat) renewableAt(now time.Time) bool {
+	return s.LastTime <= now.Add(10*24*time.Hour).Unix()
+}
+func LatestCertificate(certs []CertStat) (CertStat, bool) {
+	if len(certs) == 0 {
+		return CertStat{}, false
+	}
+	latest := certs[0]
+	for _, cert := range certs[1:] {
+		if cert.LastTime > latest.LastTime {
+			latest = cert
+		}
+	}
+	return latest, true
+}
+
+// PreflightDeployer 在签发前执行只读目标校验；现有第三方适配器可选实现。
+type PreflightDeployer interface{ Preflight(context.Context) error }
+
+// RenewalSelector 区分证书库候选证书与线上同时绑定的证书。
+type RenewalSelector interface {
+	SelectRenewalCertificate([]CertStat) (CertStat, bool)
 }
