@@ -5,7 +5,6 @@ name: AutoCert
 
 permissions:
   contents: read
-  actions: read
 
 on:
   schedule:
@@ -60,7 +59,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
         TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_1 --variable DOMAINTOOLS -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINTOOLS）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINTOOLS），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINCLASSROOMS || 'DOMAINCLASSROOMS' }}
       id: renew_2
       continue-on-error: true
@@ -73,7 +79,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
         TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_2 --variable DOMAINCLASSROOMS -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINCLASSROOMS）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINCLASSROOMS），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINICUA || 'DOMAINICUA' }}
       id: renew_3
       continue-on-error: true
@@ -86,7 +99,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
         TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_3 --variable DOMAINICUA -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINICUA）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINICUA），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINSDREAM || 'DOMAINSDREAM' }}
       id: renew_4
       continue-on-error: true
@@ -99,7 +119,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.AVAR_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.AVAR_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.AVAR_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_4 --variable DOMAINSDREAM -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINSDREAM）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINSDREAM），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINSJW || 'DOMAINSJW' }}
       id: renew_5
       continue-on-error: true
@@ -112,7 +139,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_5 --variable DOMAINSJW -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINSJW）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINSJW），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINSQTWL || 'DOMAINSQTWL' }}
       id: renew_6
       continue-on-error: true
@@ -125,7 +159,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_6 --variable DOMAINSQTWL -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINSQTWL）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINSQTWL），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINVQTWL || 'DOMAINVQTWL' }}
       id: renew_7
       continue-on-error: true
@@ -138,7 +179,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_7 --variable DOMAINVQTWL -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINVQTWL）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINVQTWL），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINGKZYB || 'DOMAINGKZYB' }}
       id: renew_8
       continue-on-error: true
@@ -151,7 +199,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_8 --variable DOMAINGKZYB -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINGKZYB）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINGKZYB），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINSJOY || 'DOMAINSJOY' }}
       id: renew_9
       continue-on-error: true
@@ -164,7 +219,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.SEED_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SEED_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.SEED_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_9 --variable DOMAINSJOY -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINSJOY）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINSJOY），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINSSEED || 'DOMAINSSEED' }}
       id: renew_10
       continue-on-error: true
@@ -177,7 +239,14 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.SEED_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SEED_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.SEED_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_10 --variable DOMAINSSEED -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: |
+        printf '[%s] 开始处理（DOMAINSSEED）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINSSEED），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
     - name: ${{ vars.DOMAINSJAYNA || 'DOMAINSJAYNA' }}
       id: renew_11
       continue-on-error: true
@@ -190,11 +259,11 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.SJAYNA_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SJAYNA_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.SJAYNA_CDN_SECURITY_TOKEN }}
-      run: python3 .github/scripts/renewal_report.py run --task renew_11 --variable DOMAINSJAYNA -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-
-    - name: Report renewal results
-      if: ${{ always() }}
-      env:
-        AUTOCERT_STEPS: ${{ toJSON(steps) }}
-        GH_TOKEN: ${{ github.token }}
-      run: python3 .github/scripts/renewal_report.py summary
+      run: |
+        printf '[%s] 开始处理（DOMAINSJAYNA）\n' "${TASK_DOMAIN:-未配置}"
+        if ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"; then
+          printf '[%s] 处理完成\n' "${TASK_DOMAIN:-未配置}"
+        else
+          status=$?
+          printf '[%s] 处理失败（DOMAINSJAYNA），退出码 %s，具体错误见上方输出。\n' "${TASK_DOMAIN:-未配置}" "$status" >&2
+        fi
