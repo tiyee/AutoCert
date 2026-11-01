@@ -198,12 +198,15 @@ CDN_REGION='ap-southeast-1'
 
 ## GitHub Actions 部署
 
-仓库提供 [.github/workflows/AutoCert.yml](.github/workflows/AutoCert.yml)，支持定时检查和手动触发。
+仓库提供两个工作流：
+
+- [.github/workflows/certonly.yml](.github/workflows/certonly.yml)：首次申请并部署，使用 `--certonly`，仅支持手动触发。
+- [.github/workflows/AutoCert.yml](.github/workflows/AutoCert.yml)：后续续期，使用 `--renew`，支持定时检查和手动触发。
 
 1. Fork 仓库，在自己的仓库中启用 Actions，并检查定时工作流是否已启用。
 2. 打开 `Settings → Secrets and variables → Actions`，配置下面的凭据。
-3. 编辑工作流，只保留自己需要的域名步骤，替换对应域名变量及平台参数。仓库自带的多个域名和专用账号配置是部署示例，不能直接作为自己的配置使用。
-4. 先按“首次申请并部署”完成签发；工作流默认使用 `--renew`，无法替没有证书的域名执行首次部署。
+3. 编辑两个工作流，只保留自己需要的域名步骤，并保持域名变量、凭据和平台参数一致。仓库自带的多个域名和专用账号配置是部署示例，不能直接作为自己的配置使用。
+4. 在 Actions 页面手动运行 `Certonly`，完成首次申请并部署；每次运行都会重新申请，已有证书的日常续期应运行 `AutoCert`。也可按前文“首次申请并部署”在服务器上完成签发。
 5. 在 Actions 页面手动运行 `AutoCert`，确认每个域名的结果后，再依赖定时任务。
 
 通用凭据使用以下 Repository Secrets：
@@ -224,7 +227,7 @@ CDN_REGION='ap-southeast-1'
 
 默认平台为阿里云 DNS + 阿里云 CDN。使用 ESA/EdgeOne 时，需要在对应步骤的命令中添加 `--dns-platform=esa`、`--cdn-platform=teo` 等实际组合；也可添加 `--dns-site-id`、`--cdn-site-id` 和区域参数。凭据继续通过 Secrets 注入，站点 ID 和区域可放在 Repository Variables 中。
 
-当前定时表达式为 `30 5 */5 * *`：在每月的 1、6、11、16、21、26、31 日（当月存在该日期时），UTC 05:30、北京时间 13:30 运行，并非严格每隔 120 小时。每个域名在独立步骤中运行，日志会先显示域名和配置变量名。申请或部署失败时，直接打印程序错误和该域名的退出码，然后继续处理其余域名；不会再执行统一的失败汇总或 `exit 1`。
+`AutoCert` 的定时表达式为 `30 5 */5 * *`：在每月的 1、6、11、16、21、26、31 日（当月存在该日期时），UTC 05:30、北京时间 13:30 运行，并非严格每隔 120 小时。`Certonly` 不定时运行。两个工作流都为每个域名使用独立步骤，日志会先显示域名和配置变量名。申请或部署失败时，直接打印程序错误和该域名的退出码，然后继续处理其余域名；不会再执行统一的失败汇总或 `exit 1`。
 
 查看 Actions 中对应域名的步骤即可找到完整错误。域名处理失败不会使整个工作流失败，因此工作流显示成功不代表所有域名都处理成功，请检查各域名日志。依赖下载或构建失败仍会使工作流失败。
 
