@@ -3,6 +3,10 @@
 
 name: AutoCert
 
+permissions:
+  contents: read
+  actions: read
+
 on:
   schedule:
     - cron:  '30 5 */5 * *'
@@ -24,9 +28,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7
+    - name: Checkout
+      uses: actions/checkout@v7
+      id: checkout
 
     - name: Set up Go
+      id: setup_go
       uses: actions/setup-go@v6
       with:
         # go-version: '1.24'
@@ -36,10 +43,12 @@ jobs:
       
           
     - name: Depedency
+      id: dependencies
       run: go mod tidy  && go mod download
     - name: Build
+      id: compile
       run: go build -o AutoCert cmd/main.go
-    - name: ${{vars.DOMAINTOOLS}}
+    - name: ${{ vars.DOMAINTOOLS || 'DOMAINTOOLS' }}
       id: renew_1
       continue-on-error: true
       env:
@@ -51,8 +60,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
         TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINCLASSROOMS}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_1 --variable DOMAINTOOLS -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINCLASSROOMS || 'DOMAINCLASSROOMS' }}
       id: renew_2
       continue-on-error: true
       env:
@@ -64,8 +73,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
         TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINICUA}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_2 --variable DOMAINCLASSROOMS -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINICUA || 'DOMAINICUA' }}
       id: renew_3
       continue-on-error: true
       env:
@@ -77,8 +86,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{env.CDNAccessKeyId}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{env.CDNAccessKeySecret}}
         TASK_CDN_SECURITY_TOKEN: ${{ env.CDNSecurityToken }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINSDREAM}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_3 --variable DOMAINICUA -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINSDREAM || 'DOMAINSDREAM' }}
       id: renew_4
       continue-on-error: true
       env:
@@ -90,8 +99,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.AVAR_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.AVAR_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.AVAR_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINSJW}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_4 --variable DOMAINSDREAM -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINSJW || 'DOMAINSJW' }}
       id: renew_5
       continue-on-error: true
       env:
@@ -103,8 +112,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINSQTWL}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_5 --variable DOMAINSJW -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINSQTWL || 'DOMAINSQTWL' }}
       id: renew_6
       continue-on-error: true
       env:
@@ -116,8 +125,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINVQTWL}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_6 --variable DOMAINSQTWL -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINVQTWL || 'DOMAINVQTWL' }}
       id: renew_7
       continue-on-error: true
       env:
@@ -129,8 +138,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINGKZYB}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_7 --variable DOMAINVQTWL -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINGKZYB || 'DOMAINGKZYB' }}
       id: renew_8
       continue-on-error: true
       env:
@@ -142,8 +151,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.QT_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.QT_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.QT_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINSJOY}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_8 --variable DOMAINGKZYB -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINSJOY || 'DOMAINSJOY' }}
       id: renew_9
       continue-on-error: true
       env:
@@ -155,8 +164,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.SEED_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SEED_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.SEED_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINSSEED}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_9 --variable DOMAINSJOY -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINSSEED || 'DOMAINSSEED' }}
       id: renew_10
       continue-on-error: true
       env:
@@ -168,8 +177,8 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.SEED_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SEED_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.SEED_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
-    - name: ${{vars.DOMAINSJAYNA}}
+      run: python3 .github/scripts/renewal_report.py run --task renew_10 --variable DOMAINSSEED -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --platform=tencent --cdn-platform=aliyun --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+    - name: ${{ vars.DOMAINSJAYNA || 'DOMAINSJAYNA' }}
       id: renew_11
       continue-on-error: true
       env:
@@ -181,8 +190,11 @@ jobs:
         TASK_CDN_ACCESS_KEY_ID: ${{secrets.SJAYNA_CDN_AK}}
         TASK_CDN_ACCESS_KEY_SECRET: ${{secrets.SJAYNA_CDN_SK}}
         TASK_CDN_SECURITY_TOKEN: ${{ secrets.SJAYNA_CDN_SECURITY_TOKEN }}
-      run: ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
+      run: python3 .github/scripts/renewal_report.py run --task renew_11 --variable DOMAINSJAYNA -- ./AutoCert --renew --domain="$TASK_DOMAIN" --email="$TASK_EMAIL" --product=cdn --dns-access-key-id="$TASK_DNS_ACCESS_KEY_ID" --dns-access-key-secret="$TASK_DNS_ACCESS_KEY_SECRET" --cdn-access-key-id="$TASK_CDN_ACCESS_KEY_ID" --cdn-access-key-secret="$TASK_CDN_ACCESS_KEY_SECRET" --dns-security-token="$TASK_DNS_SECURITY_TOKEN" --cdn-security-token="$TASK_CDN_SECURITY_TOKEN"
 
-    - name: Report renewal failures
-      if: ${{ always() && contains(steps.*.outcome, 'failure') }}
-      run: exit 1
+    - name: Report renewal results
+      if: ${{ always() }}
+      env:
+        AUTOCERT_STEPS: ${{ toJSON(steps) }}
+        GH_TOKEN: ${{ github.token }}
+      run: python3 .github/scripts/renewal_report.py summary
